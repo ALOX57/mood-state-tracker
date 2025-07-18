@@ -38,11 +38,18 @@ TEMP_FILE = 'data/logs_temp.json'
 
 with open(TEMP_FILE, 'w') as f:
     json.dump(logs, f, indent=2)
+    f.flush()
+    os.fsync(f.fileno())
 
+# Validate
 with open(TEMP_FILE, 'r') as f:
     try:
         test = json.load(f)
         assert isinstance(test, list)
+        for item in test:
+            assert isinstance(item, dict)
+            assert "mood" in item
+            assert "timestamp" in item
     except Exception:
         print("ERROR: Temp file corrupted - not replacing original!")
         exit()
