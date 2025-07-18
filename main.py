@@ -39,6 +39,13 @@ TEMP_FILE = 'data/logs_temp.json'
 with open(TEMP_FILE, 'w') as f:
     json.dump(logs, f, indent=2)
 
+with open(TEMP_FILE, 'r') as f:
+    try:
+        test = json.load(f)
+        assert isinstance(test, list)
+    except Exception:
+        print("ERROR: Temp file corrupted - not replacing original!")
+        exit()
 shutil.move(TEMP_FILE, DATA_FILE)
 
 
