@@ -7,6 +7,7 @@ import traceback
 
 DB_FILE = 'data/logs.db'
 
+
 def get_valid_mood_input() -> str:
     raw = input("Mood (1-10): ").strip()
     if not raw:
@@ -19,6 +20,7 @@ def get_valid_mood_input() -> str:
             raise ValueError("Mood must be between 1 and 10.")
     else:
         raise ValueError("Mood must be a number between 1 and 10.")
+
 
 def init_db(path: str) -> sqlite3.Connection:
     conn = sqlite3.connect(path)
@@ -34,6 +36,7 @@ def init_db(path: str) -> sqlite3.Connection:
     conn.commit()
     return conn
 
+
 def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str) -> None:
     cursor = conn.cursor()
     cursor.execute('''
@@ -47,8 +50,7 @@ def log_error_to_file(e: Exception):
     with open("error.log", "a") as f:
         f.write(datetime.now().astimezone().isoformat() + "\n")
         f.write(traceback.format_exc())
-        f.write("\n" + "-"*40 + "\n") # Divider
-
+        f.write("\n" + "-" * 40 + "\n")  # Divider
 
 
 def main():
@@ -82,6 +84,7 @@ def main():
 
     print("Saved.")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())
