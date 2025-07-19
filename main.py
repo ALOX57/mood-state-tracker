@@ -3,14 +3,12 @@
 from datetime import datetime
 import sqlite3
 
-print(datetime.now().isoformat())
+DB_FILE = 'data/logs.db'
 
-
-def validate_mood(raw):
-    raw = raw.strip()
+def get_valid_mood_input() -> str:
+    raw = input("Mood (1-10): ").strip()
     if not raw:
         raise ValueError("Mood cannot be empty.")
-
     if raw.isdigit():
         val = int(raw)
         if 1 <= val <= 10:
@@ -20,46 +18,56 @@ def validate_mood(raw):
     else:
         raise ValueError("Mood must be a number between 1 and 10.")
 
-
-try:
-    mood = input("Mood (1-10): ")
-    mood = validate_mood(mood)
-    print("You entered:", mood)
-except ValueError as e:
-    print("ERROR:", e)
-    exit()
-
-entry = {
-    "timestamp": datetime.now().isoformat(),
-    "mood": mood
-}
-
-DB_FILE = 'data/logs.db'
-
-try:
-    conn = sqlite3.connect(DB_FILE)
+def init_db(path: str) -> sqlite3.Connection:
+    conn = sqlite3.connect(path)
     cursor = conn.cursor()
 
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS logs (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        timestamp TEXT NOT NULL,
-        mood TEXT NOT NULL
-    )    
-    ''')
-
-    cursor.execute('''
-    INSERT INTO logs (timestamp, mood)
-    VALUES (?, ?)
-    ''', (entry["timestamp"], entry["mood"]))
-
+        CREATE TABLE IF NOT EXISTS logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT NOT NULL,
+            mood TEXT NOT NULL
+        )    
+        ''')
     conn.commit()
-except Exception as e:
-    print("ERROR: Failed to write to database.")
-    print(e)
-    conn.rollback()
-    exit()
-finally:
-    conn.close()
+    return conn
 
-print("Saved at", entry["timestamp"])
+def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str) -> None:
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO logs (timestamp, mood)
+        VALUES (?, ?)
+    ''', (timestamp, mood))
+    conn.commit()
+
+
+
+def main():
+    mood = None
+    conn = None
+
+    try:
+        mood = get_valid_mood_input()
+        print("You entered:", mood)
+    except ValueError as e:
+        print("ERROR:", e)
+        exit()
+
+    timestamp = datetime.now().isoformat()
+
+    try:
+        conn = init_db(DB_FILE)
+        insert_mood(conn, timestamp, mood)
+    except Exception as e:
+        print("ERROR: Failed to write to database.")
+        print(e)
+        conn.rollback()
+        exit()
+    finally:
+        conn.close()
+
+    print("Saved.")
+
+
+if __name__ == "__main__":
+    main()
