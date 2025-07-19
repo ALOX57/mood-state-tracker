@@ -1,5 +1,5 @@
 # main.py
-
+import sys
 from datetime import datetime
 import os
 import sqlite3
@@ -45,7 +45,7 @@ def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str) -> None:
 
 def log_error_to_file(e: Exception):
     with open("error.log", "a") as f:
-        f.write(datetime.now().isoformat() + "\n")
+        f.write(datetime.now().astimezone().isoformat() + "\n")
         f.write(traceback.format_exc())
         f.write("\n" + "-"*40 + "\n") # Divider
 
@@ -60,9 +60,9 @@ def main():
         print("You entered:", mood)
     except ValueError as e:
         print("ERROR:", e)
-        exit()
+        return 1
 
-    timestamp = datetime.now().isoformat()
+    timestamp = datetime.now().astimezone().isoformat()
 
     try:
         os.makedirs(os.path.dirname(DB_FILE), exist_ok=True)
@@ -75,12 +75,13 @@ def main():
         log_error_to_file(e)
         if conn:
             conn.rollback()
-        exit()
+        return 2
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
     print("Saved.")
-
+    return 0
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
