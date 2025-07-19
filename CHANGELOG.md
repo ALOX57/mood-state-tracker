@@ -1,0 +1,19 @@
+ Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [0.1.0] - 2025-07-19
+
+### Added
+
+- Initial mood tracking system using SQLite
+- User input for mood (1–10) with validation
+- Error logging with timestamped logs
+- Local database setup with automatic table creation
+- `mood_note` input (optional) stored with mood and timestamp
+- Looping mood input to ensure valid entry
