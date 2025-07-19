@@ -5,29 +5,29 @@ import sqlite3
 
 print(datetime.now().isoformat())
 
+
 def validate_mood(raw):
     raw = raw.strip()
-    if raw.isDigit():
+    if not raw:
+        raise ValueError("Mood cannot be empty.")
+
+    if raw.isdigit():
         val = int(raw)
         if 1 <= val <= 10:
             return str(val)
         else:
-            print("Numeric mood must be between 1 and 10.")
-            exit()
-    elif raw:
-        return raw
+            raise ValueError("Mood must be between 1 and 10.")
     else:
-        print("Mood cannot be empty.")
-        exit()
-
-mood = input("Mood (1-10 or label): ")
-mood = validate_mood(mood)
+        raise ValueError("Mood must be a number between 1 and 10.")
 
 
-
-
-print("You entered:", mood)
-
+try:
+    mood = input("Mood (1-10): ")
+    mood = validate_mood(mood)
+    print("You entered:", mood)
+except ValueError as e:
+    print("ERROR:", e)
+    exit()
 
 entry = {
     "timestamp": datetime.now().isoformat(),
@@ -62,4 +62,4 @@ except Exception as e:
 finally:
     conn.close()
 
-print("Saved.")
+print("Saved at", entry["timestamp"])
