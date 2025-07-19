@@ -32,7 +32,7 @@ def init_db(path: str) -> sqlite3.Connection:
         CREATE TABLE IF NOT EXISTS logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT NOT NULL,
-            mood TEXT NOT NULL
+            mood TEXT NOT NULL,
             mood_note TEXT
         )    
         ''')
