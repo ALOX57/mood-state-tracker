@@ -2,7 +2,7 @@
 data/logs.json
 data/logs.db
 data/logs_temp.json
-
+logs/
 # Bytecode and IDE settings
 __pycache__/
 *.pyc
