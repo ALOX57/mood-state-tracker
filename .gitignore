@@ -1,11 +1,17 @@
 # Ignore data files
-data/logs.json
 data/logs.db
 data/logs_temp.json
-logs/
+data/logs/
+*.log
+
+
 # Bytecode and IDE settings
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .idea/
+
+# OS files
+.DS_Store
+Thumbs.db
