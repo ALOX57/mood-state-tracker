@@ -1,7 +1,9 @@
 # main.py
 
 from datetime import datetime
+import os
 import sqlite3
+import traceback
 
 DB_FILE = 'data/logs.db'
 
@@ -41,6 +43,13 @@ def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str) -> None:
     conn.commit()
 
 
+def log_error_to_file(e: Exception):
+    with open("error.log", "a") as f:
+        f.write(datetime.now().isoformat() + "\n")
+        f.write(traceback.format_exc())
+        f.write("\n" + "-"*40 + "\n") # Divider
+
+
 
 def main():
     mood = None
@@ -56,12 +65,16 @@ def main():
     timestamp = datetime.now().isoformat()
 
     try:
+        os.makedirs(os.path.dirname(DB_FILE), exist_ok=True)
         conn = init_db(DB_FILE)
         insert_mood(conn, timestamp, mood)
+        print(f"Saved to database: {DB_FILE}")
     except Exception as e:
         print("ERROR: Failed to write to database.")
         print(e)
-        conn.rollback()
+        log_error_to_file(e)
+        if conn:
+            conn.rollback()
         exit()
     finally:
         conn.close()
