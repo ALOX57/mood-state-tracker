@@ -1,0 +1,11 @@
+# Ignore data files
+data/logs.json
+data/logs.db
+data/logs_temp.json
+
+# Bytecode and IDE settings
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.idea/

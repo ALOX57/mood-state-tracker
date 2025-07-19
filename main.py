@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 import os
 import shutil
+import sqlite3
 
 print(datetime.now().isoformat())
 
@@ -57,3 +58,26 @@ shutil.move(TEMP_FILE, DATA_FILE)
 
 
 print("Saved.")
+
+
+
+
+DB_FILE = 'data/logs.db'
+conn = sqlite3.connect(DB_FILE)
+cursor = conn.cursor()
+
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp TEXT NOT NULL,
+    mood TEXT NOT NULL
+)    
+''')
+
+cursor.execute('''
+INSERT INTO logs (timestamp, mood)
+VALUES (?, ?)
+''', (entry["timestamp"], entry["mood"]))
+
+conn.commit()
+conn.close()
