@@ -47,14 +47,14 @@ def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str, note: str, 
         tag_name = tag_name.strip().lower()
 
         # Check if tag exists
-        cursor.execute('SELECT id FROM tags WHERE name = ?', tag_name)
+        cursor.execute('SELECT id FROM tags WHERE name = ?', (tag_name,))
         result = cursor.fetchone()
 
         if result:
             tag_id = result[0]
         else:
             # Insert new tag
-            cursor.execute('INSERT INTO tags (name) VALUES (?)', tag_name)
+            cursor.execute('INSERT INTO tags (name) VALUES (?)', (tag_name,))
             tag_id = cursor.lastrowid
 
         # Link mood and tag in join table
