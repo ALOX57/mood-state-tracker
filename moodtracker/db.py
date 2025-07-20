@@ -12,6 +12,25 @@ def init_db(path: str) -> sqlite3.Connection:
             mood_note TEXT
         )    
         ''')
+
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS tags (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE 
+        )    
+    ''')
+
+    # Joining table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS mood_tags (
+            mood_id INTEGER,
+            tag_id INTEGER,
+            FOREIGN KEY (mood_id) REFERENCES logs(id),
+            FOREIGN KEY (tag_id) REFERENCES tags(id)
+        )    
+    ''')
+
     conn.commit()
     return conn
 
