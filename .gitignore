@@ -4,14 +4,20 @@ data/logs_temp.json
 data/logs/
 *.log
 
-
 # Bytecode and IDE settings
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .idea/
+*.py[cod]
+
+# Virtual environments
+venv/
+env/
 
 # OS files
 .DS_Store
 Thumbs.db
+
+.pytest_cache/
