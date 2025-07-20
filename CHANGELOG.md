@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [0.2.1] - 2025-07-20
+### Fixed
+- Case-insensitive tag duplication: Tags like "Happy" and "happy" now correctly resolve to a single tag entry.
+
+### Added
+- Unit tests for `insert_mood`:
+  - Handles mood insertion with/without notes and tags
+  - Validates correct tag linking
+  - Ensures tag deduplication and case normalization
+- Unit tests for `get_tags` input parsing logic
+
 
 ## [0.2.0] - 2025-07-20
 ### Added

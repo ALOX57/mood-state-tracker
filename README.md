@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/version-0.2.0-blue.svg)
+![version](https://img.shields.io/badge/version-0.2.1-blue.svg)
 
 # MoodTracker
 A local-first, privacy-preserving mood tracker designed to help users build emotional awareness over time. 
