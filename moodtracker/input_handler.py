@@ -13,5 +13,13 @@ def get_valid_mood_input() -> str:
         else:
             print("Mood must be a number between 1 and 10.")
 
+
 def get_optional_note() -> str:
     return input("Optional note: ").strip()
+
+
+def get_tags() -> list[str]:
+    raw_tags = input("Enter tags (comma-separated, optional): ")
+    if not raw_tags:
+        return []
+    return [tag.strip().lower() for tag in raw_tags.split(',') if tag.strip()]
