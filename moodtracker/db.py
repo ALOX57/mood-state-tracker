@@ -35,10 +35,29 @@ def init_db(path: str) -> sqlite3.Connection:
     return conn
 
 
-def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str, note: str) -> None:
+def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str, note: str, tags: list[str]) -> None:
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO logs (timestamp, mood, mood_note)
         VALUES (?, ?, ?)
     ''', (timestamp, mood, note))
+    mood_id = cursor.lastrowid
+
+    for tag_name in tags:
+        tag_name = tag_name.strip().lower()
+
+        # Check if tag exists
+        cursor.execute('SELECT id FROM tags WHERE name = ?', tag_name)
+        result = cursor.fetchone()
+
+        if result:
+            tag_id = result[0]
+        else:
+            # Insert new tag
+            cursor.execute('INSERT INTO tags (name) VALUES (?)', tag_name)
+            tag_id = cursor.lastrowid
+
+        # Link mood and tag in join table
+        cursor.execute('INSERT INTO mood_tags (mood_id, tag_id) VALUES (?, ?)', (mood_id, tag_id))
+
     conn.commit()
