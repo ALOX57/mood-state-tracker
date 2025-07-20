@@ -43,7 +43,8 @@ def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str, note: str, 
     ''', (timestamp, mood, note))
     mood_id = cursor.lastrowid
 
-    unique_tags = list(dict.fromkeys(tags))
+    normalized_tags = [tag.strip().lower() for tag in tags]
+    unique_tags = list(dict.fromkeys(normalized_tags))
     for tag_name in unique_tags:
         tag_name = tag_name.strip().lower()
 
