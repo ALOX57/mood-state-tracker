@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.0] - 2025-07-20
+### Added
+- Tag system: users can now enter tags per mood
+- Tags are stored in separate table and linked to moods
+- CLI input for comma-separated tags
+
+### Fixed
+- Error when passing single tag string (tuple binding issue)
+- Logger path now correctly uses config value
+
 ## [0.1.1] - 2025-07-19
 
 ### Changed
