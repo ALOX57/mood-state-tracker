@@ -19,8 +19,16 @@ def get_all_moods(conn: sqlite3.Connection) -> list[tuple]:
 
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT logs.id, logs.timestamp, logs.mood, logs.mood_note
+        SELECT 
+            logs.id,
+            logs.timestamp,
+            logs.mood,
+            logs.mood_note,
+            GROUP_CONCAT(tags.name) AS tag_list
         FROM logs
-        ORDER BY timestamp DESC
+        LEFT JOIN mood_tags ON logs.id = mood_tags.mood_id
+        LEFT JOIN tags ON tags.id = mood_tags.tag_id
+        GROUP BY logs.id
+        ORDER BY logs.timestamp DESC
     ''')
     return cursor.fetchall()

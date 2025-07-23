@@ -71,10 +71,11 @@ def handle_view():
         if not moods:
             print("No moods found")
         else:
-            print("\n=== Mood Entires ===")
+            print("\n=== Mood Entries ===")
             for mood in moods:
-                mood_id, timestamp, score, note = mood
-                print(f"[{timestamp}] Mood: {score} Note: {note or '(none)'}")
+                mood_id, timestamp, score, note, tag_str = mood
+                tag_display = f"Tags: {tag_str}" if tag_str else "Tags: (none)"
+                print(f"[{timestamp}] Mood: {score}  {tag_display}  Note: {note or '(none)'}")
         conn.close()
         return 0
     except Exception as e:
