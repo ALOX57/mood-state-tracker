@@ -12,6 +12,7 @@ from moodtracker.db import init_db, insert_mood
 from moodtracker.logger import log_error_to_file
 from moodtracker.input_handler import get_valid_mood_input, get_optional_note, get_tags
 from moodtracker.query import get_all_moods
+from moodtracker.utils import format_timestamp
 
 
 def main() -> int:
@@ -74,8 +75,12 @@ def handle_view():
             print("\n=== Mood Entries ===")
             for mood in moods:
                 mood_id, timestamp, score, note, tag_str = mood
+
+                # Convert ISO string to datetime object and format for readability
+                formatted_ts = format_timestamp(timestamp)
+
                 tag_display = f"Tags: {tag_str}" if tag_str else "Tags: (none)"
-                print(f"[{timestamp}] Mood: {score}  {tag_display}  Note: {note or '(none)'}")
+                print(f"[{formatted_ts}] Mood: {score}  {tag_display}  Note: {note or '(none)'}")
         conn.close()
         return 0
     except Exception as e:
