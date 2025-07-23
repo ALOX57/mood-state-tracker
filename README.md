@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/version-0.2.1-blue.svg)
+![version](https://img.shields.io/badge/version-0.2.2-blue.svg)
 
 # MoodTracker
 A local-first, privacy-preserving mood tracker designed to help users build emotional awareness over time. 
@@ -42,7 +42,7 @@ You can view your data using any SQLite browser or query it via Python.
 This project uses [Semantic Versioning](https://semver.org/).  
 See [CHANGELOG.md](./CHANGELOG.md) for full version history.
 
-**Current version:** `0.2.0`
+**Current version:** `0.2.2`
 
 ---
 
