@@ -5,15 +5,35 @@ Handles user interaction flow, captures input, stores data, and logs errors if t
 """
 
 import sys
+from config import DB_PATH
 from datetime import datetime
 import os
 from moodtracker.db import init_db, insert_mood
 from moodtracker.logger import log_error_to_file
 from moodtracker.input_handler import get_valid_mood_input, get_optional_note, get_tags
-from config import DB_PATH
+from moodtracker.query import get_all_moods
 
 
 def main() -> int:
+    if len(sys.argv) < 2:
+        print("No command given — defaulting to: log")
+        command = "log"
+    else:
+        command = sys.argv[1]
+
+    print(f"Command received: {command}")
+
+    if command == "log":
+        return handle_log()
+    elif command == "view":
+        return handle_view()
+    else:
+        print(f"Unknown command: {command}")
+        print("Usage: python main.py [log | view]")
+        return 1
+
+
+def handle_log():
     conn = None
 
     mood = get_valid_mood_input()
@@ -42,6 +62,26 @@ def main() -> int:
 
     print("Saved.")
     return 0
+
+
+def handle_view():
+    try:
+        conn = init_db(DB_PATH)
+        moods = get_all_moods(conn)
+        if not moods:
+            print("No moods found")
+        else:
+            print("\n=== Mood Entires ===")
+            for mood in moods:
+                mood_id, timestamp, score, note = mood
+                print(f"[{timestamp}] Mood: {score} Note: {note or '(none)'}")
+        conn.close()
+        return 0
+    except Exception as e:
+        print("ERROR: Failed to retrieve moods.")
+        print(e)
+        log_error_to_file(e)
+        return 1
 
 
 if __name__ == "__main__":
