@@ -7,6 +7,7 @@ Includes functions to initialize the database schema and insert mood entries wit
 
 import sqlite3
 
+
 def init_db(path: str) -> sqlite3.Connection:
     """
     Initialises the SQLite database and creates required tables if they don't exist.
@@ -72,7 +73,7 @@ def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str, note: str, 
     ''', (timestamp, mood, note))
     mood_id = cursor.lastrowid
 
-    normalized_tags = [tag.strip().lower() for tag in tags]
+    normalized_tags = [tag.strip().lower() for tag in tags if tag.strip()]
     unique_tags = list(dict.fromkeys(normalized_tags))
     for tag_name in unique_tags:
         tag_name = tag_name.strip().lower()
