@@ -1,6 +1,23 @@
+"""
+Handles all database operations for storing mood logs, tags, and their relationships.
+
+Includes functions to initialize the database schema and insert mood entries with optional tags.
+"""
+
+
 import sqlite3
 
 def init_db(path: str) -> sqlite3.Connection:
+    """
+    Initialises the SQLite database and creates required tables if they don't exist.
+
+    Args:
+        path (str): The path to the SQLite database file.
+
+    Returns:
+        sqlite3.Connection: A connection object to the initialised database.
+
+    """
     conn = sqlite3.connect(path)
     cursor = conn.cursor()
 
@@ -12,7 +29,6 @@ def init_db(path: str) -> sqlite3.Connection:
             mood_note TEXT
         )    
         ''')
-
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS tags (
@@ -36,6 +52,19 @@ def init_db(path: str) -> sqlite3.Connection:
 
 
 def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str, note: str, tags: list[str]) -> None:
+    """
+    Inserts a mood entry into the database and links the associated tags
+
+    Args:
+        conn (sqlite3.Connection): The SQLite database connection.
+        timestamp (str): The timestamp of the mood entry in ISO 8601 format.
+        mood (str): The user's mood value or label.
+        note (str): An optional text note explaining the mood entry.
+        tags (list[str]): A list of tags to associate with this mood entry.
+
+    Returns:
+        None
+    """
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO logs (timestamp, mood, mood_note)

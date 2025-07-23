@@ -1,4 +1,9 @@
-# main.py
+"""
+Main entry point for the Mood Tracker CLI application.
+
+Handles user interaction flow, captures input, stores data, and logs errors if they occur.
+"""
+
 import sys
 from datetime import datetime
 import os
