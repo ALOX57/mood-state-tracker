@@ -8,7 +8,7 @@ import sys
 from config import DB_PATH
 from datetime import datetime
 import os
-from moodtracker.db import init_db, insert_mood
+from moodtracker.db import insert_mood, get_connection
 from moodtracker.logger import log_error_to_file
 from moodtracker.input_handler import get_valid_mood_input, get_optional_note, get_tags
 from moodtracker.query import get_all_moods, get_moods_by_tag
@@ -69,14 +69,14 @@ def handle_log():
 
 def handle_view():
     try:
-        conn = init_db(DB_PATH)
-        moods = get_all_moods(conn)
+        with get_connection() as conn:
+            moods = get_all_moods(conn)
         if not moods:
             print("No moods found")
         else:
             display_moods(moods, "Mood Entries")
-        conn.close()
         return 0
+
     except Exception as e:
         print("ERROR: Failed to retrieve moods.")
         print(e)
@@ -92,15 +92,15 @@ def handle_filter(args: list[str]) -> int:
     tag = args[1]
 
     try:
-        conn = init_db(DB_PATH)
-        moods = get_moods_by_tag(conn, tag)
+        with get_connection() as conn:
+            moods = get_moods_by_tag(conn, tag)
 
-        if not moods:
-            print(f"No moods found with tag: {tag}")
-        else:
-            display_moods(moods, f"Mood Entries Tagged '{tag}'")
-        conn.close()
-        return 0
+            if not moods:
+                print(f"No moods found with tag: {tag}")
+            else:
+                display_moods(moods, f"Mood Entries Tagged '{tag}'")
+            return 0
+
     except Exception as e:
         print("ERROR: Failed to filter moods.")
         print(e)

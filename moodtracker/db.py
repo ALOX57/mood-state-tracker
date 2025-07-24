@@ -5,6 +5,8 @@ Includes functions to initialize the database schema and insert mood entries wit
 """
 
 
+from contextlib import contextmanager
+from config import DB_PATH
 import sqlite3
 
 
@@ -93,3 +95,24 @@ def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str, note: str, 
         cursor.execute('INSERT INTO mood_tags (mood_id, tag_id) VALUES (?, ?)', (mood_id, tag_id))
 
     conn.commit()
+
+
+@contextmanager
+def get_connection(path: str = DB_PATH):
+    """
+    Context manager for the SQLite connection.
+
+    Args:
+        path (str): Path to the SQLite database.
+
+    Yields:
+        sqlite3.Connection: Open connection to the database.
+
+    Ensures the connection is closed automatically when the block exits, even if an error occurs.
+    """
+
+    conn = init_db(path)
+    try:
+        yield conn
+    finally:
+        conn.close()
