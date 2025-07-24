@@ -11,8 +11,8 @@ import os
 from moodtracker.db import init_db, insert_mood
 from moodtracker.logger import log_error_to_file
 from moodtracker.input_handler import get_valid_mood_input, get_optional_note, get_tags
-from moodtracker.query import get_all_moods
-from moodtracker.utils import format_timestamp
+from moodtracker.query import get_all_moods, get_moods_by_tag
+from moodtracker.cli_utils import display_moods
 
 
 def main() -> int:
@@ -74,15 +74,7 @@ def handle_view():
         if not moods:
             print("No moods found")
         else:
-            print("\n=== Mood Entries ===")
-            for mood in moods:
-                mood_id, timestamp, score, note, tag_str = mood
-
-                # Convert ISO string to datetime object and format for readability
-                formatted_ts = format_timestamp(timestamp)
-
-                tag_display = f"Tags: {tag_str}" if tag_str else "Tags: (none)"
-                print(f"[{formatted_ts}] Mood: {score}  {tag_display}  Note: {note or '(none)'}")
+            display_moods(moods, "Mood Entries")
         conn.close()
         return 0
     except Exception as e:
@@ -101,21 +93,12 @@ def handle_filter(args: list[str]) -> int:
 
     try:
         conn = init_db(DB_PATH)
-        from moodtracker.query import get_moods_by_tag
         moods = get_moods_by_tag(conn, tag)
 
         if not moods:
             print(f"No moods found with tag: {tag}")
         else:
-            print(f"\n=== Mood Entries Tagged '{tag}' ===")
-            for mood in moods:
-                mood_id, timestamp, score, note, tag_str = mood
-
-                # Convert ISO string to datetime object and format for readability
-                formatted_ts = format_timestamp(timestamp)
-
-                tag_display = f"Tags: {tag_str}" if tag_str else "Tags: (none)"
-                print(f"[{formatted_ts}] Mood: {score}  {tag_display}  Note: {note or '(none)'}")
+            display_moods(moods, f"Mood Entries Tagged '{tag}'")
         conn.close()
         return 0
     except Exception as e:
@@ -123,8 +106,6 @@ def handle_filter(args: list[str]) -> int:
         print(e)
         log_error_to_file(e)
         return 1
-
-
 
 
 if __name__ == "__main__":
