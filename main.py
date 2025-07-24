@@ -49,9 +49,9 @@ def handle_log():
 
     try:
         os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-        conn = init_db(DB_PATH)
-        insert_mood(conn, timestamp, mood, note, tags)
-        print(f"Saved to database: {DB_PATH}")
+        with get_connection() as conn:
+            insert_mood(conn, timestamp, mood, note, tags)
+            print(f"Saved to database: {DB_PATH}")
     except Exception as e:
         print("ERROR: Failed to write to database.")
         print(e)

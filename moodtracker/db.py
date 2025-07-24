@@ -25,7 +25,7 @@ def init_db(path: str) -> sqlite3.Connection:
     cursor = conn.cursor()
 
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS logs (
+        CREATE TABLE IF NOT EXISTS moods (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             timestamp TEXT NOT NULL,
             mood TEXT NOT NULL,
@@ -70,7 +70,7 @@ def insert_mood(conn: sqlite3.Connection, timestamp: str, mood: str, note: str, 
     """
     cursor = conn.cursor()
     cursor.execute('''
-        INSERT INTO logs (timestamp, mood, mood_note)
+        INSERT INTO moods (timestamp, mood, mood_note)
         VALUES (?, ?, ?)
     ''', (timestamp, mood, note))
     mood_id = cursor.lastrowid

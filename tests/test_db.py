@@ -24,7 +24,7 @@ def test_insert_mood_with_tags():
     cursor = conn.cursor()
 
     # 1. Check logs table
-    cursor.execute("SELECT COUNT(*) FROM logs")
+    cursor.execute("SELECT COUNT(*) FROM moods")
     assert cursor.fetchone()[0] == 1
 
     # 2. Check tags
@@ -50,7 +50,7 @@ def test_insert_mood_without_tags():
     insert_mood(conn, timestamp, mood, note, tags)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT COUNT(*) FROM logs")
+    cursor.execute("SELECT COUNT(*) FROM moods")
     assert cursor.fetchone()[0] == 1
 
     cursor.execute("SELECT COUNT(*) FROM mood_tags")
@@ -143,7 +143,7 @@ def test_insert_exact_mood_and_note():
     cursor = conn.cursor()
 
     # Check exact values
-    cursor.execute("SELECT mood, mood_note FROM logs")
+    cursor.execute("SELECT mood, mood_note FROM moods")
     row = cursor.fetchone()
     assert row == (mood, note)
 
@@ -161,7 +161,7 @@ def test_insert_mood_without_note():
     insert_mood(conn, timestamp, mood, note, tags)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT mood_note FROM logs")
+    cursor.execute("SELECT mood_note FROM moods")
     note_value = cursor.fetchone()[0]
     assert note_value == ""
 
@@ -173,7 +173,7 @@ def test_tables_exist_after_init():
     conn = init_db(":memory:")
     cursor = conn.cursor()
 
-    for table in ["logs", "tags", "mood_tags"]:
+    for table in ["moods", "tags", "mood_tags"]:
         cursor.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table}'")
         assert cursor.fetchone() is not None
 
