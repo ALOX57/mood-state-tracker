@@ -28,9 +28,11 @@ def main() -> int:
         return handle_log()
     elif command == "view":
         return handle_view()
+    elif command == "filter":
+        return handle_filter(sys.argv[2:])
     else:
         print(f"Unknown command: {command}")
-        print("Usage: python main.py [log | view]")
+        print("Usage: python main.py [log | view | filter]")
         return 1
 
 
@@ -88,6 +90,41 @@ def handle_view():
         print(e)
         log_error_to_file(e)
         return 1
+
+
+def handle_filter(args: list[str]) -> int:
+    if len(args) != 2 or args[0] != "--tag":
+        print("Usage: python main.py filter --tag TAG")
+        return 1
+
+    tag = args[1]
+
+    try:
+        conn = init_db(DB_PATH)
+        from moodtracker.query import get_moods_by_tag
+        moods = get_moods_by_tag(conn, tag)
+
+        if not moods:
+            print(f"No moods found with tag: {tag}")
+        else:
+            print(f"\n=== Mood Entries Tagged '{tag}' ===")
+            for mood in moods:
+                mood_id, timestamp, score, note, tag_str = mood
+
+                # Convert ISO string to datetime object and format for readability
+                formatted_ts = format_timestamp(timestamp)
+
+                tag_display = f"Tags: {tag_str}" if tag_str else "Tags: (none)"
+                print(f"[{formatted_ts}] Mood: {score}  {tag_display}  Note: {note or '(none)'}")
+        conn.close()
+        return 0
+    except Exception as e:
+        print("ERROR: Failed to filter moods.")
+        print(e)
+        log_error_to_file(e)
+        return 1
+
+
 
 
 if __name__ == "__main__":
