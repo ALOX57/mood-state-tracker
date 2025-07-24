@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [0.3.0] - 2025-07-24
+
+### Added
+- `view` command to display all mood entries stored in the database
+- `filter --tag TAG` command to filter entries by tag
+- `log` command now explicitly handled via CLI argument (previously only defaulted)
+- Timestamp formatting to human-readable form (e.g., "Wed 24 Jul 2025 — 11:56 AM")
+- `format_timestamp()` utility function in new `utils.py` module
+- `display_moods()` function to consolidate and reuse mood display logic
+- Context manager `get_db_connection()` for clean and safe SQLite access
+
+### Changed
+- Major refactor: moved repeated database connection logic to `get_db_connection()`
+- Major refactor: unified display output across `view` and `filter` using `display_moods()`
+- Improved readability and consistency in `main.py` flow and argument parsing
+
+### Removed
+- Redundant try/except/finally blocks for database closing (handled by context manager)
+
+
 ## [0.2.2] - 2025-07-23
 ### Added
 - Unit test for error logging utility using monkeypatching.

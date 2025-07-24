@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/version-0.2.2-blue.svg)
+![version](https://img.shields.io/badge/version-0.3.0-blue.svg)
 
 # MoodTracker
 A local-first, privacy-preserving mood tracker designed to help users build emotional awareness over time. 
@@ -11,20 +11,26 @@ for deeper personal analytics and self-reflection.
 
 - Input a mood rating (1–10) with validation and retry logic
 - Optional text note ("mood note") per entry
-- Optional tag system
+- Optional tag system with filtering and search
 - Automatic timestamping (with timezone awareness)
 - Local SQLite database with automatic table creation
 - Error logging with stack traces and timestamps
 - Clean CLI interface with safe, scalable architecture
+- View logged moods via `view` command
+- Filter moods by tag via `filter --tag TAG`
 
 ## Usage
 
 Run the app from the terminal:
 ```bash
-python main.py
+python main.py [log | view | filter --tag TAG]
 ```
+### Commands
+- `log`: Add a new mood entry
+- `view`: Display all logged moods
+- `filter --tag TAG`: Show moods with a specific tag
 
-You’ll be prompted for:
+You’ll be prompted (in `log`) for:
 
 1. A mood rating (1–10)
 2. An optional note (e.g., “feeling tired but focused”)
@@ -42,7 +48,7 @@ You can view your data using any SQLite browser or query it via Python.
 This project uses [Semantic Versioning](https://semver.org/).  
 See [CHANGELOG.md](./CHANGELOG.md) for full version history.
 
-**Current version:** `0.2.2`
+**Current version:** `0.3.0`
 
 ---
 
