@@ -30,9 +30,11 @@ def main() -> int:
         return handle_view()
     elif command == "filter":
         return handle_filter(sys.argv[2:])
+    elif command == "stats":
+        return handle_stats()
     else:
         print(f"Unknown command: {command}")
-        print("Usage: python main.py [log | view | filter]")
+        print("Usage: python main.py [log | view | filter| stats]")
         return 1
 
 
@@ -103,6 +105,30 @@ def handle_filter(args: list[str]) -> int:
 
     except Exception as e:
         print("ERROR: Failed to filter moods.")
+        print(e)
+        log_error_to_file(e)
+        return 1
+
+
+def handle_stats() -> int:
+    try:
+        with get_connection() as conn:
+            moods = get_all_moods(conn)
+
+            if not moods:
+                print("No data available.")
+                return 0
+
+            scores = [int(row[2]) for row in moods]
+            print("\n=== Mood Statistics ===")
+            print(f"Total entries: {len(scores)}")
+            print(f"Average mood: {sum(scores) / len(scores):.2f}")
+            print(f"Lowest mood: {min(scores)}")
+            print(f"Highest mood: {max(scores)}")
+
+            return 0
+    except Exception as e:
+        print("ERROR: Failed to retrieve statistics")
         print(e)
         log_error_to_file(e)
         return 1
