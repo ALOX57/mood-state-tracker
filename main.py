@@ -13,6 +13,8 @@ from moodtracker.logger import log_error_to_file
 from moodtracker.input_handler import get_valid_mood_input, get_optional_note, get_tags
 from moodtracker.query import get_all_moods, get_moods_by_tag
 from moodtracker.cli_utils import display_moods
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 
 def main() -> int:
@@ -32,6 +34,8 @@ def main() -> int:
         return handle_filter(sys.argv[2:])
     elif command == "stats":
         return handle_stats()
+    elif command == "graph":
+        return handle_graph()
     else:
         print(f"Unknown command: {command}")
         print("Usage: python main.py [log | view | filter| stats]")
@@ -128,7 +132,46 @@ def handle_stats() -> int:
 
             return 0
     except Exception as e:
-        print("ERROR: Failed to retrieve statistics")
+        print("ERROR: Failed to retrieve statistics.")
+        print(e)
+        log_error_to_file(e)
+        return 1
+
+
+def handle_graph() -> int:
+    try:
+        with get_connection() as conn:
+            moods = get_all_moods(conn)
+
+            if not moods:
+                print("No data available to plot.")
+                return 0
+
+            print("Sample row:", moods[0])
+            timestamps = [datetime.fromisoformat(row[1]) for row in moods]
+            scores = [int(row[2]) for row in moods]
+
+            # Convert to matplotlib’s internal float date format
+            dates = mdates.date2num(timestamps)
+            plt.figure(figsize=(10, 5))
+            plt.plot(dates, scores, marker='o', linestyle='solid', color='blue')
+
+            # Format x-axis as dates
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+            plt.gca().xaxis.set_major_locator(mdates.AutoDateLocator())
+
+            plt.title("Mood Over Time")
+            plt.xlabel("Date")
+            plt.ylabel("Mood Score")
+            plt.grid(True)
+            plt.gcf().autofmt_xdate()
+            plt.tight_layout()
+            plt.show()
+
+            return 0
+
+    except Exception as e:
+        print("ERROR: Failed to generate graph.")
         print(e)
         log_error_to_file(e)
         return 1
