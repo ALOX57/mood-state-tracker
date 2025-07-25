@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from moodtracker.db import init_db, insert_mood
 from config import DB_PATH
 from datetime import datetime, timedelta
